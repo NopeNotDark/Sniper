@@ -1,4 +1,5 @@
-## Spyglass Sniper Plugin<img src="https://github.com/NopeNotDark/Sniper/blob/main/icon.png?raw=true" height="72" width="128" align="left"></img>
+## Spyglass Sniper Plugin<img src="https://github.com/NopeNotDark/Sniper/blob/main/icon.png?raw=true" height="62" width="128" align="left"></img> [![](https://poggit.pmmp.io/shield.state/Spyglass-Sniper)](https://poggit.pmmp.io/p/Spyglass-Sniper) <a href="https://poggit.pmmp.io/p/Spyglass-Sniper"><img src="https://poggit.pmmp.io/shield.state/Spyglass-Sniper"></a> [![](https://poggit.pmmp.io/shield.api/Spyglass-Sniper)](https://poggit.pmmp.io/p/Spyglass-Sniper)
+<a href="https://poggit.pmmp.io/p/Spyglass-Sniper"><img src="https://poggit.pmmp.io/shield.api/Spyglass-Sniper"></a>
 Use an AWP-themed Spyglass to shoot at your enemies!
 
 ## Features

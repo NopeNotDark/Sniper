@@ -21,3 +21,7 @@ Use an AWP-themed Spyglass to shoot at your enemies!
 We welcome pull requests from anyone interested in improving this project. Before making major changes, please open an issue to discuss your proposed changes and gather feedback from the project maintainers.
 When submitting a pull request, please ensure that you have updated the relevant tests to reflect your changes and ensure they pass successfully.
 Other than that, Thank you for your contribution!
+
+## Credits
+- [PocketAI](https://thedarkproject.org/pocketai) - Code generating AI revolving around Pocketmine-MP
+- [NhanAZ](https://github.com/NhanAZ) - Resource Pack Registry Library

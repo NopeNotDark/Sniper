@@ -16,3 +16,8 @@ Use an AWP-themed Spyglass to shoot at your enemies!
 ## Config
 - `custom-death-messages`: Set this to true to enable custom death messages when players are killed by the sniper rifle.
 - `backfire`: Set this to true to enable the chance of the sniper rifle backfiring and killing the player using it.
+
+# How to Contribute?
+We welcome pull requests from anyone interested in improving this project. Before making major changes, please open an issue to discuss your proposed changes and gather feedback from the project maintainers.
+When submitting a pull request, please ensure that you have updated the relevant tests to reflect your changes and ensure they pass successfully.
+Other than that, Thank you for your contribution!

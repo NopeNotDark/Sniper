@@ -1,0 +1,6 @@
+{
+    "awp.sound": {
+        "category": "music",
+        "sounds": ["sounds/awp"]
+    }
+}

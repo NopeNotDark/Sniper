@@ -1,0 +1,17 @@
+{
+"format_version": 1,
+"header": {
+"description": "By RafatAr32",
+"name": "Sniper Spyglass",
+"uuid": "fd20b016-a49b-47f7-826c-ca072ffd7bb5",
+"version": [0, 0, 1]
+},
+"modules": [
+{
+"description": "By RafatAr32",
+"type": "resources",
+"uuid": "99f8b053-8536-4b52-aa6e-85d9357fd9da",
+"version": [0, 0, 1]
+}
+]
+}

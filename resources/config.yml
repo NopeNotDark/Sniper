@@ -1,0 +1,7 @@
+---
+# Should the sniper backfire and kill the sniper holder?
+backfire: false
+
+# Cool custom death messages (and funny) 100% true
+custom-death-messages: true
+...

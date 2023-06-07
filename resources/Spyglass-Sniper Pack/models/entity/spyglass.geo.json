@@ -1,0 +1,41 @@
+{
+	"format_version": "1.16.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.spyglass",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 5,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "spyglass",
+          "binding": "q.item_slot_to_bone_name(q.main_hand_item_use_duration > 0.0f ? 'head' : 'main_hand')",
+					"pivot": [0, 0, 0],
+					"binding": "q.item_slot_to_bone_name(q.main_hand_item_use_duration > 0.0f ? 'head' : 'main_hand')",
+					"cubes": [
+						{"origin": [-11, 0, 0], "size": [6, 2, 2], "inflate": 0.1, "pivot": [-8, 1, 1], "rotation": [0, 180, 0], "uv": [0, 0]},
+						{"origin": [-18, 0, 0], "size": [6, 2, 2], "inflate": 0.05, "uv": [0, 0]},
+						{"origin": [-24.1, 0, 0], "size": [6, 2, 2], "inflate": 0.05, "pivot": [-21.1, 1, 1], "rotation": [0, 180, 0], "uv": [0, 0]},
+						{"origin": [-11.2, 2.9, -0.1], "size": [6.2, 2.2, 2.2], "uv": [0, 0]},
+						{"origin": [-5, 0, 0], "size": [5, 2, 2], "pivot": [-2.5, 1, 1], "rotation": [0, 180, 0], "uv": [0, 4]},
+						{"origin": [-4.5, 0, 0], "size": [5, 2, 2], "inflate": -0.2, "pivot": [0, 2, 1], "rotation": [0, 180, 15], "uv": [0, 4]},
+						{"origin": [0.3, -1.05, 0], "size": [4, 2, 2], "inflate": -0.3, "pivot": [3.82903, -1.09654, 1], "rotation": [0, 180, 0], "uv": [1, 4]},
+						{"origin": [0, 1.4, 0], "size": [4, 2, 2], "inflate": -0.4, "pivot": [3.82903, -1.09654, 1], "rotation": [0, 180, 0], "uv": [1, 4]},
+						{"origin": [3.2, 1.4, 0], "size": [1.5, 2, 2], "inflate": -0.4, "pivot": [3.82903, -1.09654, 1], "rotation": [0, 180, 0], "uv": [1, 4]},
+						{"origin": [5.2581, -0.05, 0], "size": [1, 2, 3], "pivot": [5.75806, -0.05, 1], "rotation": [0, 90, 0], "uv": [4, 1]},
+						{"origin": [-28, 0, 0], "size": [5, 2, 2], "inflate": -0.2, "uv": [0, 4]},
+						{"origin": [-13, 0, 0], "size": [5, 2, 2], "inflate": -0.1, "uv": [0, 4]},
+						{"origin": [-9, 0, 0], "size": [5, 2, 2], "inflate": -0.01, "pivot": [-9, 0, 1], "rotation": [0, 0, 20], "uv": [2, 0]},
+						{"origin": [-4.30154, -1.7101, 0], "size": [4, 2, 2], "inflate": -0.02, "pivot": [-4.30154, -1.7101, 1], "rotation": [0, 0, -25], "uv": [2, 0], "mirror": true},
+						{"origin": [-8, 2, 0.5], "size": [5, 2, 1], "uv": [2, 1]},
+						{"origin": [-5.2, 3, 0], "size": [5, 2, 2], "inflate": -0.15, "uv": [0, 4]}
+					]
+				}
+			]
+		}
+	]
+}

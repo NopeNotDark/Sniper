@@ -1,4 +1,4 @@
-## Spyglass Sniper Plugin<img src="https://github.com/NopeNotDark/Sniper/blob/main/icon.png?raw=true" height="90" width="128" align="left"></img>
+## Spyglass Sniper Plugin<img src="https://github.com/NopeNotDark/Sniper/blob/main/icon.png?raw=true" height="80" width="128" align="left"></img>
 Use an AWP-themed Spyglass to shoot at your enemies!
 
 ## Features

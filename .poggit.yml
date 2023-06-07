@@ -1,0 +1,9 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/NopeNotDark/Sniper
+build-by-default: true
+branches:
+- main
+projects:
+  Sniper:
+    path: ""
+    icon: "icon.png"
+...

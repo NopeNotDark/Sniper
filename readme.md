@@ -25,3 +25,4 @@ Other than that, Thank you for your contribution!
 ## Credits
 - [PocketAI](https://thedarkproject.org/pocketai) - Code generating AI revolving around Pocketmine-MP
 - [NhanAZ](https://github.com/NhanAZ) - Resource Pack Registry Library
+- [RafatAR32_](https://mcpedl.com/sniper-spyglass-texture-pack/) - Spyglass Sniper Model

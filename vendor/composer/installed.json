@@ -1,0 +1,47 @@
+{
+    "packages": [
+        {
+            "name": "nhanaz/libregrsp",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NhanAZ/libRegRsp.git",
+                "reference": "f6a1846117dd6a1fda5b19fe3166ad428fd48fdf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NhanAZ/libRegRsp/zipball/f6a1846117dd6a1fda5b19fe3166ad428fd48fdf",
+                "reference": "f6a1846117dd6a1fda5b19fe3166ad428fd48fdf",
+                "shasum": ""
+            },
+            "time": "2023-06-05T13:47:37+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "virion": {
+                    "spec": "3.0",
+                    "namespace-root": "NhanAZ\\libRegRsp"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "description": "Resource pack register library for PocketMine plugins",
+            "support": {
+                "issues": "https://github.com/NhanAZ/libRegRsp/issues",
+                "source": "https://github.com/NhanAZ/libRegRsp/tree/master"
+            },
+            "install-path": "../nhanaz/libregrsp"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}

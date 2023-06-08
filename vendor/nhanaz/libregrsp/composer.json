@@ -1,0 +1,15 @@
+{
+    "name": "nhanaz/libregrsp",
+    "description": "Resource pack register library for PocketMine plugins",
+    "type": "library",
+    "license": "LGPL-3.0-or-later",
+    "autoload": {
+        "classmap": ["src"]
+    },
+    "extra": {
+        "virion": {
+            "spec": "3.0",
+            "namespace-root": "NhanAZ\\libRegRsp"
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "name": "nopenotdark/sniper",
+    "minimum-stability": "dev",
+    "type": "pmmp-plugin",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Nopenotdark\\Sniper\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "NopeNotDark",
+            "email": "tdmd217@gmail.com"
+        }
+    ],
+    "require": {
+        "nhanaz/libregrsp": "dev-master"
+    }
+}

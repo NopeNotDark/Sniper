@@ -1,6 +1,6 @@
 ---
 name: Spyglass-Sniper
-main: nopenotdark\Snipers
+main: nopenotdark\spyglass_sniper\Snipers
 description: A plugin that adds a sniper to the game!
 version: 1.0.5-SNAPSHOT
 authors:

@@ -6,4 +6,7 @@ projects:
   Sniper:
     path: ""
     icon: "icon.png"
+    libs:
+      - src: NhanAZ/libRegRsp/libRegRsp
+        version: 1.0.3
 ...

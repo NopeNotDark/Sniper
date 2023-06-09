@@ -90,10 +90,12 @@ final class Snipers extends PluginBase {
                     $entityHeadY = $entity->getLocation()->getY() + $entityHeight - $entity->getEyeHeight();
 
                     if ($dustPosition->getY() >= $entityHeadY) {
-                        $player->sendMessage(C::GREEN . "+" . C::DARK_GREEN . "1" . C::GREEN . " Headshot");
+                        // Loop sends message to player, loop ends, but still sends no clue why ???
+                        // $player->sendMessage(C::GREEN . "+" . C::DARK_GREEN . "1" . C::GREEN . " Headshot");
                         $event = new EntityDamageEvent($player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 21 * $damageMultiplier);
                     } else {
-                        $player->sendMessage(C::GREEN . "+" . C::DARK_GREEN . "1" . C::YELLOW . " Bodyshot");
+                        // Loop sends message to player, loop ends, but still sends no clue why ???
+                        // $player->sendMessage(C::GREEN . "+" . C::DARK_GREEN . "1" . C::YELLOW . " Bodyshot");
                         $event = new EntityDamageEvent($player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 20 / 5 * $damageMultiplier);
                     }
                 } else {

@@ -15,6 +15,8 @@
         }
     ],
     "require": {
-        "nhanaz/libregrsp": "dev-master"
+        "php": "^8.0",
+        "nhanaz/libregrsp": "dev-master",
+        "pocketmine/pocketmine-mp": "^5.0.0"
     }
 }

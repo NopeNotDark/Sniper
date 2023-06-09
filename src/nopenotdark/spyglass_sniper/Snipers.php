@@ -10,14 +10,22 @@
 
 namespace nopenotdark\spyglass_sniper;
 
+use JetBrains\PhpStorm\Pure;
 use NhanAZ\libRegRsp\libRegRsp;
+use pocketmine\color\Color;
+use pocketmine\entity\Entity;
+use pocketmine\entity\Living;
+use pocketmine\entity\Location;
+use pocketmine\entity\projectile\Snowball;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
-use pocketmine\utils\TextFormat;
+use pocketmine\utils\TextFormat as C;
+use pocketmine\world\particle\DustParticle;
 
 final class Snipers extends PluginBase {
     use SingletonTrait;
@@ -29,7 +37,107 @@ final class Snipers extends PluginBase {
         $this->getServer()->getPluginManager()->registerEvents(new SnipersListener(), $this);
     }
 
-    public function playAWPSound(Player $player): void {
+    public function handleSpyglassAnimation(Player $player): void {
+        $yaw = $player->getLocation()->getYaw();
+        $pitch = $player->getLocation()->getPitch();
+        $vector = Snipers::getInstance()->calculateVector($yaw, $pitch);
+
+        $dustCount = $this->getConfig()->get("shot-range", 100);
+        $dustSpacing = 0.2;
+        $dustParticle = new DustParticle(new Color(255, 255, 255));
+
+        Snipers::getInstance()->playSound($player);
+
+        $snowBall = new Snowball(Location::fromObject($player->getEyePos(), $player->getWorld()), $player);
+        $snowBall->setMotion($player->getDirectionVector()->multiply(10));
+        $snowBall->spawnToAll();
+
+        for ($i = 0; $i < $dustCount; $i++) {
+            $dustPosition = $player->getEyePos()->add(
+                $vector->getX() * $dustSpacing * $i,
+                $vector->getY() * $dustSpacing * $i,
+                $vector->getZ() * $dustSpacing * $i
+            );
+            $player->getWorld()->addParticle($dustPosition, $dustParticle);
+
+            $this->handleEntityDamage($player, $dustPosition);
+        }
+    }
+
+    public function handleEntityDamage(Player $player, Vector3 $dustPosition): void {
+        $boundingBox = new AxisAlignedBB(
+            $dustPosition->getX() - 0.2,
+            $dustPosition->getY() - 0.2,
+            $dustPosition->getZ() - 0.2,
+            $dustPosition->getX() + 0.2,
+            $dustPosition->getY() + 0.2,
+            $dustPosition->getZ() + 0.2
+        );
+
+        $entities = $player->getWorld()->getNearbyEntities($boundingBox);
+
+        $damageMultiplier = 1;
+        $playerAttacked = false;
+
+        if (!empty($entities)) {
+            foreach ($entities as $entity) {
+                if (!$entity instanceof Living) {
+                    continue;
+                }
+
+                $entityHeight = $entity->getSize()->getHeight();
+                $hitDistance = $dustPosition->distance($entity->getLocation());
+                if ($hitDistance <= $entityHeight) {
+                    $entityHeadY = $entity->getLocation()->getY() + $entityHeight - $entity->getEyeHeight();
+
+                    if ($dustPosition->getY() >= $entityHeadY) {
+                        $player->sendMessage(C::GREEN . "+" . C::DARK_GREEN . "1" . C::GREEN . " Headshot");
+                        $event = new EntityDamageEvent($player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 21 * $damageMultiplier);
+                    } else {
+                        $player->sendMessage(C::GREEN . "+" . C::DARK_GREEN . "1" . C::YELLOW . " Bodyshot");
+                        $event = new EntityDamageEvent($player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 20 / 5 * $damageMultiplier);
+                    }
+                } else {
+                    // Missed Shot
+                    continue;
+                }
+
+                if ($player === $entity) {
+                    if ($this->getConfig()->get("backfire")) {
+                        if ($this->getBackfireBool()) {
+                            $player->sendMessage(C::RED . "Your gun malfunctioned and your hand was blown off.");
+                            $entity->attack($event);
+                            $playerAttacked = true;
+                            break;
+                        }
+                    }
+                    $playerAttacked = true;
+                    break;
+                }
+
+                $entity->attack($event);
+                $damageMultiplier -= 0.2;
+                if ($damageMultiplier < 0.2) {
+                    break;
+                }
+            }
+        }
+
+        if (!$playerAttacked && $this->getConfig()->get("backfire")) {
+            $player->sendMessage(C::RED . "Your gun malfunctioned and your hand was blown off.");
+        }
+    }
+
+    public function getBackfireBool(): bool {
+        $first = mt_rand(0, 300);
+        $second = mt_rand(0, 300);
+        if ($first === $second) {
+            return true;
+        }
+        return false;
+    }
+
+    public function playSound(Player $player): void {
         $pk = PlaySoundPacket::create(
             "awp.sound",
             $player->getEyePos()->getX(),
@@ -41,45 +149,13 @@ final class Snipers extends PluginBase {
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
-    public function calcDistance(Player $player, Vector3 $direction, int $i): Vector3 {
-        return new Vector3(
-            $player->getEyePos()->getX() + $direction->x * $i,
-            $player->getEyePos()->getY(),
-            $player->getEyePos()->getZ() + $direction->z * $i
-        );
+    #[Pure]
+    public function calculateVector(float $yaw, float $pitch): Vector3 {
+        $x = -sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI);
+        $y = -sin($pitch / 180 * M_PI);
+        $z = cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI);
+        return new Vector3($x, $y, $z);
     }
 
-    public function calcProjectile(Player $player, Vector3 $direction, int $i, int $duration, float $gravity): Vector3 {
-        return new Vector3(
-            $player->getEyePos()->getX() + $direction->x * $i,
-            $player->getEyePos()->getY() - (($i - $duration) * ($i - $duration) * $gravity) / 2,
-            $player->getEyePos()->getZ() + $direction->z * $i
-        );
-    }
-
-    public function attackEntities(Player $player, Vector3 $pos): void {
-        $backfireEnabled = $this->getConfig()->get("backfire", false);
-
-        foreach ($player->getWorld()->getEntities() as $entity) {
-            if ($entity === $player) {
-                if ($backfireEnabled && $this->shouldBackfire()) {
-                    $entity->attack(new EntityDamageEvent($player, EntityDamageEvent::CAUSE_PROJECTILE, 100));
-                    $player->sendMessage(TextFormat::RED . "Watch out! The sniper backfired and killed you!");
-                }
-                return;
-            }
-
-            $entityPos = $entity->getPosition();
-            if ($entityPos->getX() <= $pos->getX() && $entityPos->getY() <= $pos->getY() && $entityPos->getZ() <= $pos->getZ()) {
-                $entity->attack(new EntityDamageEvent($player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 100));
-            }
-        }
-    }
-
-    private function shouldBackfire(): bool {
-        $randomChance = mt_rand(1, 350);
-        $randomChance2 = mt_rand(1, 350);
-        return $randomChance === $randomChance2;
-    }
 
 }

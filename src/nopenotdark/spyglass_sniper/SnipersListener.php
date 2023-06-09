@@ -11,18 +11,15 @@
 namespace nopenotdark\spyglass_sniper;
 
 use nopenotdark\spyglass_sniper\_trait\CooldownTrait;
-use pocketmine\color\Color;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\item\Item;
 use pocketmine\item\ItemTypeIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
-use pocketmine\world\particle\DustParticle;
+use pocketmine\utils\TextFormat as C;
 
 final class SnipersListener implements Listener {
     use CooldownTrait;
@@ -32,53 +29,37 @@ final class SnipersListener implements Listener {
         $packet = $event->getPacket();
 
         if ($packet instanceof AnimatePacket && $packet->action === AnimatePacket::ACTION_SWING_ARM) {
-            $itemInHand = $player->getInventory()->getItemInHand();
-            if ($itemInHand->getTypeId() !== ItemTypeIds::SPYGLASS) {
-                return;
-            }
+            $item = $player->getInventory()->getItemInHand();
 
-            $cooldownKey = "awp_cooldown_" . $player->getName();
-            $cooldownCount = $this->getCooldownCount($cooldownKey);
+            if ($item->getTypeId() == ItemTypeIds::SPYGLASS) {
+                $cooldownKey = $player->getName() . '_spyglass_cooldown';
 
-            if ($cooldownCount >= 4) {
-                $remainingCooldown = $this->getRemainingCooldown($cooldownKey);
-                $player->sendMessage(TextFormat::RED . "AWP is on cooldown. Please wait " . $remainingCooldown . " seconds before shooting again.");
-                return;
-            }
+                $currentTime = time();
+                $lastUsageTime = $this->getLastUsageTime($cooldownKey);
+                $cooldownDuration = Snipers::getInstance()->getConfig()->get("ammo-cooldown", 4);
 
-            $goldNuggets = $player->getInventory()->all(VanillaItems::GOLD_NUGGET());
-            if (count($goldNuggets) === 0) {
-                $player->sendMessage(TextFormat::RED . "You don't have enough gold nuggets to shoot this sniper!");
-                return;
-            }
-
-            $inventory = $player->getInventory();
-            foreach ($goldNuggets as $index => $item) {
-                $goldNugget = $item;
-                if ($goldNugget instanceof Item && $goldNugget->getTypeId() === ItemTypeIds::GOLD_NUGGET) {
-                    $goldNugget->setCount($goldNugget->getCount() - 1);
-                    $inventory->setItem($index, $goldNugget);
+                if ($currentTime - $lastUsageTime < $cooldownDuration) {
+                    $remainingCooldown = $cooldownDuration - ($currentTime - $lastUsageTime);
+                    $player->sendMessage(C::RED . "The sniper is currently on cooldown for " . $remainingCooldown . " seconds.");
+                    return;
                 }
-            }
 
-            $direction = $player->getDirectionVector();
-            $particle = new DustParticle(new Color(255, 220, 220));
-            $gravity = 0.05;
-            $duration = rand(8, 10);
-            Snipers::getInstance()->playAWPSound($player);
-            for ($i = 1; $i < $duration; $i++) {
-                $pos = Snipers::getInstance()->calcDistance($player, $direction, $i);
-                $player->getWorld()->addParticle($pos, $particle);
-                Snipers::getInstance()->attackEntities($player, $pos);
-            }
-            for ($i = $duration; $i < 100; $i++) {
-                $pos = Snipers::getInstance()->calcProjectile($player, $direction, $i, $duration, $gravity);
-                $player->getWorld()->addParticle($pos, $particle);
-                Snipers::getInstance()->attackEntities($player, $pos);
-            }
+                $ammo = $player->getInventory()->all(VanillaItems::GOLD_NUGGET());
 
-            $this->incrementCooldownCount($cooldownKey);
-            $this->updateLastUsageTime($cooldownKey);
+                if (empty($ammo)) {
+                    $player->sendMessage(C::RED . "You don't have enough ammo (gold_nugget) to shoot this sniper.");
+                    return;
+                }
+
+                foreach ($ammo as $slot => $item) {
+                    $player->getInventory()->setItem($slot, $item->setCount($item->getCount() - 1));
+                    break;
+                }
+
+                Snipers::getInstance()->handleSpyglassAnimation($player);
+
+                $this->updateLastUsageTime($cooldownKey);
+            }
         }
     }
 
@@ -89,7 +70,7 @@ final class SnipersListener implements Listener {
         if (!Snipers::getInstance()->getConfig()->get("custom-death-messages", true)) {
             return;
         }
-        $deathMessage = TextFormat::RED . $player->getName() . " ";
+        $deathMessage = C::RED . $player->getName() . " ";
         switch ($cause->getCause()) {
             case EntityDamageEvent::CAUSE_ENTITY_ATTACK:
                 $damager = $cause->getEntity();

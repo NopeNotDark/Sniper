@@ -4,4 +4,10 @@ backfire: false
 
 # Cool custom death messages (and funny) 100% true
 custom-death-messages: true
+
+# The cooldown of the ammo (in seconds)
+ammo-cooldown: 2
+
+# Range of how far the sniper will shoot (1 = 5 blocks)
+shot-range: 100
 ...

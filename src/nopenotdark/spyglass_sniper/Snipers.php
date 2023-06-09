@@ -10,7 +10,6 @@
 
 namespace nopenotdark\spyglass_sniper;
 
-use JetBrains\PhpStorm\Pure;
 use NhanAZ\libRegRsp\libRegRsp;
 use pocketmine\color\Color;
 use pocketmine\entity\Entity;
@@ -149,7 +148,6 @@ final class Snipers extends PluginBase {
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
-    #[Pure]
     public function calculateVector(float $yaw, float $pitch): Vector3 {
         $x = -sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI);
         $y = -sin($pitch / 180 * M_PI);

@@ -33,8 +33,6 @@
 
 namespace nopenotdark\spyglass_sniper;
 
-use NhanAZ\libRegRsp\libRegRsp;
-use pocketmine\color\Color;
 use pocketmine\entity\Living;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Snowball;
@@ -47,59 +45,61 @@ use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\TextFormat as C;
-use pocketmine\world\particle\DustParticle;
+use pocketmine\world\particle\CriticalParticle;
 
 final class Snipers extends PluginBase {
 
     use SingletonTrait;
 
-    private array $shootableBlocks;
+    private array $shootableBlocks = [];
 
     public function onEnable(): void {
         self::setInstance($this);
-        libRegRsp::regRsp($this);
+        // libRegRsp::register($this);
+
         $this->saveDefaultConfig();
         $this->getServer()->getPluginManager()->registerEvents(new SnipersListener(), $this);
 
-        foreach ($this->getConfig()->get("shootable-blocks", []) as $blockName) {
-            $this->shootableBlocks[] = StringToItemParser::getInstance()->parse($blockName)->getTypeId();
-        }
+        $this->shootableBlocks = array_map(static function ($blockName) {
+            return abs(StringToItemParser::getInstance()->parse($blockName)->getTypeId());
+        }, $this->getConfig()->get("shootable-blocks", ["AIR"]));
     }
 
     public function handleSpyglassAnimation(Player $player): void {
         $yaw = $player->getLocation()->getYaw();
         $pitch = $player->getLocation()->getPitch();
-        $vector = Snipers::getInstance()->calculateVector($yaw, $pitch);
+        $vector = $this->calculateVector($yaw, $pitch);
 
         $dustCount = $this->getConfig()->get("shot-range", 100);
         $dustSpacing = 0.2;
-        $dustParticle = new DustParticle(new Color(255, 255, 255));
+        $dustParticle = new CriticalParticle(2);
 
-        Snipers::getInstance()->playSound($player);
+        $this->playSound($player);
 
         $snowBall = new Snowball(Location::fromObject($player->getEyePos(), $player->getWorld()), $player);
-        $snowBall->setMotion($player->getDirectionVector()->multiply(10));
+        $snowBall->setMotion($player->getDirectionVector()->multiply(4));
         $snowBall->spawnToAll();
 
+        $eyePos = $player->getEyePos();
+
         for ($i = 0; $i < $dustCount; $i++) {
-            $dustPosition = $player->getEyePos()->add(
+            $dustPosition = $eyePos->add(
                 $vector->getX() * $dustSpacing * $i,
                 $vector->getY() * $dustSpacing * $i,
                 $vector->getZ() * $dustSpacing * $i
             );
             $player->getWorld()->addParticle($dustPosition, $dustParticle);
+            $blockAt = $player->getWorld()->getBlockAt(round($dustPosition->getX()), round($dustPosition->getY()), round($dustPosition->getZ()));
+
+            if (!in_array($blockAt->getTypeId(), $this->shootableBlocks)) {
+                break;
+            }
 
             $this->handleEntityDamage($player, $dustPosition);
         }
     }
 
     public function handleEntityDamage(Player $player, Vector3 $dustPosition): void {
-        $blockAt = $player->getWorld()->getBlockAt($dustPosition->getX(), $dustPosition->getY(), $dustPosition->getZ());
-
-        if (!in_array($blockAt->getTypeId(), $this->shootableBlocks)) {
-            return;
-        }
-
         $boundingBox = new AxisAlignedBB(
             $dustPosition->getX() - 0.2,
             $dustPosition->getY() - 0.2,
@@ -167,10 +167,7 @@ final class Snipers extends PluginBase {
         $first = mt_rand(0, 300);
         $second = mt_rand(0, 300);
 
-        if ($first == $second) {
-            return true;
-        }
-        return false;
+        return $first === $second;
     }
 
     public function playSound(Player $player): void {

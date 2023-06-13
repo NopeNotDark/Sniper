@@ -33,6 +33,7 @@
 
 namespace nopenotdark\spyglass_sniper;
 
+use NhanAZ\libRegRsp\libRegRsp;
 use pocketmine\entity\Living;
 use pocketmine\entity\Location;
 use pocketmine\entity\projectile\Snowball;
@@ -55,7 +56,7 @@ final class Snipers extends PluginBase {
 
     public function onEnable(): void {
         self::setInstance($this);
-        // libRegRsp::register($this);
+        libRegRsp::regRsp($this);
 
         $this->saveDefaultConfig();
         $this->getServer()->getPluginManager()->registerEvents(new SnipersListener(), $this);

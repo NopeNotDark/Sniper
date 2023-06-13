@@ -7,6 +7,6 @@ projects:
     path: ""
     icon: "icon.png"
     libs:
-      - src: NhanAZ/libRegRsp/libRegRsp
+      - src: FrozenArea/libRegRsp/libRegRsp
         version: 1.0.3
 ...
